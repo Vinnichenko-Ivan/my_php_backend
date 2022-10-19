@@ -1,6 +1,6 @@
 <?php
+include_once 'router.php';
 include_once 'request.php';
+include_once 'utils/headers.php';
 header('Content-Type: application/json');
-echo json_encode(getRequest());
-echo json_encode($_GET);
-echo json_encode($_SERVER);
+echo mainRouter(getRequest());
