@@ -1,4 +1,7 @@
-INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ('10', '2022-01-10', '7afb952e-e06b-4224-98e4-f107926aad05');
+INSERT INTO users(name, birth_date, username, email, password, gender, user_role)
+VALUES ('21', '2022-11-11', 'q', 'fox40802@gmail.com', '1', 'female', 'admin');
+
+INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ('110', '2022-01-10', '7afb952e-e06b-4224-98e4-f107926aad05');
 
 DELETE FROM jwt_tokens WHERE token = '10';
 

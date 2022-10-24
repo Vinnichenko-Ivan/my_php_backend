@@ -12,40 +12,44 @@ class UserRegisterModel
     /**
      * @throws Exception
      */
-    public function __construct(Request $request)
+
+    public function __construct(Request $request = null)
     {
-        $body = $request->getBody();
-        $compulsory = ['userName', 'name', 'password', 'email'];
-        $nullable = [];
-        foreach ($compulsory as $temp)
+        if(!is_null($request))
         {
-            if(!property_exists($body, $temp))
+            $body = $request->getBody();
+            $compulsory = ['userName', 'name', 'password', 'email'];
+            $nullable = [];
+            foreach ($compulsory as $temp)
             {
-                throw DTOCastException();
+                if(!property_exists($body, $temp))
+                {
+                    throw DTOCastException();
+                }
             }
-        }
 
-        $this->userName = $body->userName;
-        $this->name = $body->name;
-        $this->password = $body->password;
-        $this->email = $body->email;
+            $this->userName = $body->userName;
+            $this->name = $body->name;
+            $this->password = $body->password;
+            $this->email = $body->email;
 
-        if(!property_exists($body, 'birthDate'))
-        {
-            $this->birthDate = null;
-        }
-        else
-        {
-            $this->birthDate = $body->birthDate;
-        }
+            if(!property_exists($body, 'birthDate'))
+            {
+                $this->birthDate = null;
+            }
+            else
+            {
+                $this->birthDate = $body->birthDate;
+            }
 
-        if(!property_exists($body, 'gender'))
-        {
-            $this->gender = -1;
-        }
-        else
-        {
-            $this->gender = $body->gender;
+            if(!property_exists($body, 'gender'))
+            {
+                $this->gender = -1;
+            }
+            else
+            {
+                $this->gender = $body->gender;
+            }
         }
     }
 }
