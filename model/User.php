@@ -11,7 +11,6 @@ class User
     private string $avatarLink;//TODO добавить в базу данных
     private int $role;
     private Gender $gender;
-    private array $favoritesFilms;
 
     /**
      * @return string
@@ -27,22 +26,6 @@ class User
     public function setAvatarLink(string $avatarLink): void
     {
         $this->avatarLink = $avatarLink;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFavoritesFilmsId(): array
-    {
-        return $this->favoritesFilms;
-    }
-
-    /**
-     * @param array $favoritesFilmsId
-     */
-    public function setFavoritesFilmsId(array $favoritesFilmsId): void
-    {
-        $this->favoritesFilms = $favoritesFilmsId;
     }
 
     /**
