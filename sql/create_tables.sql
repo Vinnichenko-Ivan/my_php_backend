@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS genre
     genre_id UUID DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
     PRIMARY KEY (genre_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS movie
 (
@@ -20,16 +20,16 @@ CREATE TABLE IF NOT EXISTS movie
     fees INT,
     age_limit INT,
     PRIMARY KEY (movie_id)
-);
+    );
 
-CREATE TABLE IF NOT EXISTS movie_films
+CREATE TABLE IF NOT EXISTS movie_genres
 (
     movie_id UUID NOT NULL,
     genre_id UUID NOT NULL,
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     FOREIGN KEY (genre_id) REFERENCES genre(genre_id),
     UNIQUE (movie_id, genre_id)
-);
+    );
 
 CREATE TYPE gender AS ENUM ('male', 'female');
 
@@ -45,10 +45,11 @@ CREATE TABLE IF NOT EXISTS users
     password TEXT NOT NULL,
     gender gender NOT NULL,
     user_role user_role NOT NULL,
+    avatar_link TEXT,
     PRIMARY KEY (user_id),
     UNIQUE (username),
     UNIQUE (email)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS favorites
 (
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS favorites
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     UNIQUE (user_id, movie_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS review
 (
@@ -67,11 +68,12 @@ CREATE TABLE IF NOT EXISTS review
     rating INT CHECK ( rating <= 10 AND rating >= 1 ),
     is_anonymous BOOLEAN NOT NULL,
     create_date_time DATE NOT NULL,
+    review_text TEXT,
     PRIMARY KEY (review_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (movie_id) REFERENCES movie(movie_id),
     UNIQUE (user_id, movie_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS jwt_tokens
 (
@@ -80,6 +82,4 @@ CREATE TABLE IF NOT EXISTS jwt_tokens
     user_id UUID NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     UNIQUE (token)
-)
-
-
+    );
