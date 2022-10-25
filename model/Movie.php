@@ -2,19 +2,36 @@
 
 class Movie
 {
-    public string $id;
-    public string $name;
-    public string $poster;
-    public int $year;
-    public string $country;
-    public array $genres;
-    public int $time;
-    public string $tagline;
-    public string $description;
-    public string $director;
-    public int $budget;
-    public int $fees;
-    public string $ageLimit;
+    private string $id;
+    private string $name;
+    private string $poster;
+    private int $year;
+    private string $country;
+    private array $genres; //Genre
+    private array $reviews;//Review
+    private int $time;
+    private string $tagline;
+    private string $description;
+    private string $director;
+    private int $budget;
+    private int $fees;
+    private string $ageLimit;
+
+    /**
+     * @return array
+     */
+    public function getReviews(): array
+    {
+        return $this->reviews;
+    }
+
+    /**
+     * @param array $reviews
+     */
+    public function setReviews(array $reviews): void
+    {
+        $this->reviews = $reviews;
+    }
 
     /**
      * @return string

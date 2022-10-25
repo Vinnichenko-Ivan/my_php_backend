@@ -8,16 +8,33 @@ class User
     private string $username;
     private string $email;
     private string $password;
+    private string $avatarLink;//TODO добавить в базу данных
     private int $role;
     private Gender $gender;
-    private array $favoritesFilmsId;
+    private array $favoritesFilms;
+
+    /**
+     * @return string
+     */
+    public function getAvatarLink(): string
+    {
+        return $this->avatarLink;
+    }
+
+    /**
+     * @param string $avatarLink
+     */
+    public function setAvatarLink(string $avatarLink): void
+    {
+        $this->avatarLink = $avatarLink;
+    }
 
     /**
      * @return array
      */
     public function getFavoritesFilmsId(): array
     {
-        return $this->favoritesFilmsId;
+        return $this->favoritesFilms;
     }
 
     /**
@@ -25,7 +42,7 @@ class User
      */
     public function setFavoritesFilmsId(array $favoritesFilmsId): void
     {
-        $this->favoritesFilmsId = $favoritesFilmsId;
+        $this->favoritesFilms = $favoritesFilmsId;
     }
 
     /**
