@@ -63,8 +63,6 @@ function generate($prefix = 'api', $generateFile = 'router.php'){
     file_put_contents('router.php', '<?php');
     echo $text;
 }
-generate();
-
 
 //function mainRouter($request)
 //{

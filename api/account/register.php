@@ -1,5 +1,13 @@
 <?php
+
 function route($request)
 {
-    setHTTPStatus(501, 'register method');
+    try{
+        $registerDto = new UserRegisterModel($request);
+        $user = to_user($registerDto);
+        add_user(connect(), $user);
+    }
+    catch (Exception $e) {
+        setHTTPStatus(503);//TODO нормальные ошибки.
+    }
 }

@@ -1,5 +1,5 @@
 <?php
-function mainRouter($request)
+function mainRouter(Request $request)
 {
     $regexAndPaths = [];
     $regexAndPaths['/^api\/favorites$/i'] = 'api/favorites.php';
@@ -16,7 +16,7 @@ function mainRouter($request)
     $regexAndPaths['/^api\/movie\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/review\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/edit$/i'] = 'api/movie/{uuid}/review/{uuid}/edit.php';
     foreach ($regexAndPaths as $key => $value)
     {
-        if(preg_match($key, $request->path) == 1)
+        if(preg_match($key, $request->getPath()) == 1)
         {
             include_once $value;
             route($request);

@@ -41,6 +41,7 @@ function add_user($connect, User $user)
     if(!$result)
     {
         log_err('DB query error on add user. ' . pg_last_error($connect));
+        throw DBErrorException();
     }
 }
 
