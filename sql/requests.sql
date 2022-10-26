@@ -57,3 +57,5 @@ INSERT INTO review(user_id, movie_id, rating, is_anonymous, create_date_time) VA
 DELETE FROM review WHERE review_id = $1;
 
 SELECT * FROM users WHERE user_id = $1;
+
+INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ()

@@ -2,7 +2,7 @@
 
 class LoginCredentials
 {
-    public string $userName;
+    public string $username;
     public string $password;
 
     public function __construct(Request $request)
@@ -16,13 +16,13 @@ class LoginCredentials
         {
             $this->password = null;
         }
-        if(property_exists($body, 'userName'))
+        if(property_exists($body, 'username'))
         {
-            $this->userName = $body->userName;
+            $this->username = $body->username;
         }
         else
         {
-            $this->userName = null;
+            $this->username = null;
         }
     }
 

@@ -9,11 +9,6 @@ function connect(): \PgSql\Connection
     return $connect;
 }
 
-function query_to_db($connect, $text)
-{
-    return pg_fetch_object(pg_query($connect,'SELECT * FROM jwt_tokens'), 3);
-}
-
 function result_to_array_obj(\PgSql\Result $result): array
 {
     $arr = [];
@@ -22,6 +17,23 @@ function result_to_array_obj(\PgSql\Result $result): array
         $arr[] = $data;
     }
     return $arr;
+}
+
+function get_password_by_login($connect, string $username):string
+{
+    $query = 'SELECT password FROM users WHERE username = $1';
+
+    $params = [];
+    $params[1] = $username;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+    return result_to_array_obj($result)[0]->password;
 }
 
 function add_user($connect, User $user)
@@ -33,7 +45,7 @@ function add_user($connect, User $user)
     $params[2] = $user->getBirthDate();
     $params[3] = $user->getUsername();
     $params[4] = $user->getEmail();
-    $params[5] = $user->getPassword();
+    $params[5] = hash_password($user->getPassword());
     $params[6] = $user->getGender() == 1 ? 'male' : 'female';
     $params[7] = 'user';
     $result = pg_query_params($connect, $query, $params);
@@ -301,7 +313,6 @@ function edit_user($connect, User $user){
         birth_date = $2,
         username = $3,
         email  = $4,
-        
         gender = $5
         WHERE user_id = &6;';
     //--password = $5,
@@ -320,4 +331,105 @@ function edit_user($connect, User $user){
     {
         log_err('DB query error on edit profile. ' . pg_last_error($connect));
     }
+}
+
+function user_id_by_username($connect, string $username):string
+{
+    $query = 'SELECT user_id FROM users WHERE username = $1;';
+
+    $params = [];
+    $params[1] = $username;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+    return result_to_array_obj($result)[0]->user_id;
+}
+
+function add_jwt_by_username($connect, string $username, string $time, string $db_fire):void
+{
+    $query = 'INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ($1, $2, $3)';
+
+    $params = [];
+    $params[1] = $db_fire;
+    $params[2] = $time;
+    $params[3] = user_id_by_username($connect, $username);
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+}
+
+function delete_all_jwt_by_username($connect, string $username):void
+{
+    $query = 'DELETE jwt_tokens WHERE user_id = $1';
+
+    $params = [];
+    $params[1] = user_id_by_username($connect, $username);
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+}
+
+function delete_jwt_by($connect, string $db_fire):void
+{
+    $query = 'DELETE jwt_tokens WHERE token = $1';
+
+    $params = [];
+    $params[1] = $db_fire;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+}
+
+function user_id_by_jwt($connect, string $db_fire):string|null//TODO null
+{
+    $query = 'SELECT user_id FROM jwt_token WHERE token = $1';
+
+    $params = [];
+    $params[1] = $db_fire;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+    return result_to_array_obj($result)[0]->user_id;
+}
+
+function username_by_jwt($connect, string $db_fire):string|null
+{
+    $query = 'SELECT username FROM users WHERE user_id = $1';
+
+    $params = [];
+    $params[1] = user_id_by_jwt($connect, $db_fire);
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+    return result_to_array_obj($result)[0]->username;
 }
