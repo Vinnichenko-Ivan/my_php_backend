@@ -6,7 +6,24 @@ class Request
     private string $path;
     private array $segmentPath;
     private array $params;
+    private array $headers;
     private object $body;
+
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     */
+    public function setHeaders(array $headers): void
+    {
+        $this->headers = $headers;
+    }
 
     /**
      * @return object
@@ -88,6 +105,13 @@ class Request
     {
         $this->params = $params;
     }
+
+    public function getToken():string|null{
+        if(key_exists('Authorization', $this->headers)){
+            return explode(' ',$this->headers['Authorization'])[1];
+        }
+        return null;
+    }
 }
 
 function getRequest(): Request
@@ -103,7 +127,7 @@ function getRequest(): Request
             $params[$key] = &$value;
         }
     }
-
+    $request->setHeaders(getallheaders());
     $request->setParams($params);
     $request->setPath($path);
     $request->setSegmentPath($segmentPath);
@@ -111,7 +135,6 @@ function getRequest(): Request
     if($type != "GET") {
         $request->setBody(json_decode(file_get_contents('php://input')));
     }
-
 
     return $request;
 }

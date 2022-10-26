@@ -18,8 +18,6 @@ foreach (glob("model/*.php") as $filename)
     include_once $filename;
 }
 
-
-
 header('Content-Type: application/json');
 mainRouter(getRequest());
 

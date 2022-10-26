@@ -370,7 +370,7 @@ function add_jwt_by_username($connect, string $username, string $time, string $d
 
 function delete_all_jwt_by_username($connect, string $username):void
 {
-    $query = 'DELETE jwt_tokens WHERE user_id = $1';
+    $query = 'DELETE FROM jwt_tokens WHERE user_id = $1';
 
     $params = [];
     $params[1] = user_id_by_username($connect, $username);
@@ -386,7 +386,7 @@ function delete_all_jwt_by_username($connect, string $username):void
 
 function delete_jwt_by($connect, string $db_fire):void
 {
-    $query = 'DELETE jwt_tokens WHERE token = $1';
+    $query = 'DELETE FROM jwt_tokens WHERE token = $1';
 
     $params = [];
     $params[1] = $db_fire;
@@ -402,7 +402,7 @@ function delete_jwt_by($connect, string $db_fire):void
 
 function user_id_by_jwt($connect, string $db_fire):string|null//TODO null
 {
-    $query = 'SELECT user_id FROM jwt_token WHERE token = $1';
+    $query = 'SELECT user_id FROM jwt_tokens WHERE token = $1';
 
     $params = [];
     $params[1] = $db_fire;

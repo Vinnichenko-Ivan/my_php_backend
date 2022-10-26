@@ -7,14 +7,14 @@ class JWT
     public string $db_fire;
     public string $signature;
 
-    public function __construct(array $arr = null)
+    public function __construct(object $obj = null)
     {
-        if ($arr != null)
+        if ($obj != null)
         {
-            $this->login = $arr['login'];
-            $this->date_created = $arr['date_created'];
-            $this->db_fire = $arr['db_fire'];
-            $this->signature = $arr['signature'];
+            $this->login = $obj->login;
+            $this->date_created = $obj->date_created;
+            $this->db_fire = $obj->db_fire;
+            $this->signature = $obj->signature;
         }
     }
 

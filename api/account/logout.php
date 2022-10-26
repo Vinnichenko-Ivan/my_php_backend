@@ -1,5 +1,20 @@
 <?php
 function route($request)
 {
-    setHTTPStatus(501, 'logout method');
+    try{
+        $connect = connect();
+        $jwt = new JWT(from_token($request->getToken()));
+        if(validate_JWT($connect, $jwt))
+        {
+            delete_jwt_by($connect, hash_fire_db($jwt->db_fire));
+        }
+        else
+        {
+            setHTTPStatus(401);
+        }
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+        setHTTPStatus(503);//TODO нормальные ошибки.
+    }
 }

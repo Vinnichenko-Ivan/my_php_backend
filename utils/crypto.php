@@ -30,24 +30,24 @@ function type_crypto(): string{
     return 'aes-256-cbc-hmac-sha256';
 }
 
-function validate_JWT($connect, JWT $jwt, string $login):bool{
+function validate_JWT($connect, JWT $jwt):bool{
     if(my_encrypt($jwt->signature) != my_signature())
     {
         return false;
     }
-    if(username_by_jwt($connect, $jwt->db_fire) != $login)
+    if(username_by_jwt($connect, hash_fire_db($jwt->db_fire)) != $jwt->login)
     {
         return false;
-    }
-    if($jwt->login != $login)//TODO time
-    {
-        return false;
-    }
+    }//TODO time
     return true;
 }
 
 function hash_password(string $password):string{
     return $password;//TODO hash("sha256",$user->getPassword())
+}
+
+function hash_fire_db(string $fire_db):string{
+    return hash("sha256", $fire_db);//TODO hash("sha256",$user->getPassword())
 }
 
 function my_crypt(string $info):string{
