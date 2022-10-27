@@ -8,22 +8,22 @@ class User
     private string $username;
     private string $email;
     private string $password;
-    private string $avatarLink;//TODO добавить в базу данных
+    private string|null $avatarLink;//TODO добавить в базу данных
     private int $role;
     private Gender $gender;
 
     /**
      * @return string
      */
-    public function getAvatarLink(): string
+    public function getAvatarLink(): string|null
     {
         return $this->avatarLink;
     }
 
     /**
-     * @param string $avatarLink
+     * @param string|null $avatarLink
      */
-    public function setAvatarLink(string $avatarLink): void
+    public function setAvatarLink(string|null $avatarLink): void
     {
         $this->avatarLink = $avatarLink;
     }
