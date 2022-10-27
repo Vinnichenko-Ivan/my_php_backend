@@ -1,9 +1,10 @@
 <?php
 
-function gen_JWT(string $login) : JWT
+function gen_JWT(string $login, string $id) : JWT
 {
     $jwt = new JWT();
     $jwt->login = $login;
+    $jwt->id = $id;
     $jwt->db_fire = generateRandomString(100);
     $jwt->date_created = date("Y-m-d H:i:s");
     $jwt->signature = my_crypt(my_signature());

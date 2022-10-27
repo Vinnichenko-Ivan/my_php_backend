@@ -3,6 +3,7 @@
 class JWT
 {
     public string $login;
+    public string $id;
     public string $date_created;
     public string $db_fire;
     public string $signature;
@@ -12,6 +13,7 @@ class JWT
         if ($obj != null)
         {
             $this->login = $obj->login;
+            $this->id = $obj->id;
             $this->date_created = $obj->date_created;
             $this->db_fire = $obj->db_fire;
             $this->signature = $obj->signature;
