@@ -10,7 +10,7 @@ class Movie
     private array $genres; //Genre
     private array $reviews;//Review
     private int $time;
-    private string $tagline;
+    private string|null $tagline;
     private string $description;
     private string $director;
     private int $budget;
@@ -148,7 +148,7 @@ class Movie
     /**
      * @return string
      */
-    public function getTagline(): string
+    public function getTagline(): string|null
     {
         return $this->tagline;
     }
@@ -156,7 +156,7 @@ class Movie
     /**
      * @param string $tagline
      */
-    public function setTagline(string $tagline): void
+    public function setTagline(string|null $tagline): void
     {
         $this->tagline = $tagline;
     }
