@@ -314,7 +314,7 @@ function edit_user($connect, User $user){
         username = $3,
         email  = $4,
         gender = $5
-        WHERE user_id = &6;';
+        WHERE user_id = $6;';
     //--password = $5,
     $params = [];
 
@@ -322,7 +322,7 @@ function edit_user($connect, User $user){
     $params[2] = $user->getBirthDate();
     $params[3] = $user->getUsername();
     $params[4] = $user->getEmail();
-    $params[5] = $user->getGender() == Gender::Male?1:0;
+    $params[5] = $user->getGender() == Gender::Male?'male':'female';
     $params[6] = $user->getId();
 
     $result = pg_query_params($connect, $query, $params);

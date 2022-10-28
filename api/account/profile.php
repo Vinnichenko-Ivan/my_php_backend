@@ -12,6 +12,13 @@ function route(Request $request)
                 $profile = to_user_profile($user);
                 echo json_encode($profile);
             }
+            elseif ($request->getType() == 'POST')
+            {
+                $profile = new ProfileModel($request);
+                $user = get_user_by_id($connect, $jwt->id);
+                change_user_info($profile, $user);
+                edit_user($connect, $user);
+            }
         }
         else
         {
