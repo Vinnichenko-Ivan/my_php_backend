@@ -107,6 +107,14 @@ function to_movies_element_model(Movie $movie):MovieElementModel{
     return $movieElementModel;
 }
 
+function review_from_ReviewModifyModel(ReviewModifyModel $reviewModifyModel): Review
+{
+    $review = new Review();
+    $review->setReviewText($reviewModifyModel->reviewText);
+    $review->setIsAnonymous($reviewModifyModel->isAnonymous);
+    $review->setRating($reviewModifyModel->rating);
+    return $review;
+}
 
 function to_array_movies_element_model(array $movies):array{
     $movies_element = [];
