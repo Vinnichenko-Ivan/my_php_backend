@@ -10,7 +10,7 @@ class MovieDetailsModel
     public array $genres;
     public array $reviews;
     public int $time;
-    public string $tagline;
+    public string|null $tagline;
     public string $description;
     public string $director;
     public int $budget;
