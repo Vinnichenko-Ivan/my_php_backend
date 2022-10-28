@@ -164,11 +164,13 @@ function delete_to_favorite($connect, string $user_id, string $movie_id):void
     }
 }
 
-function get_movies($connect)
+function get_movies($connect, int $offset = 0,  int $limit = 5)
 {
-    $query = 'SELECT * FROM movie;';
+    $query = 'SELECT * FROM movie ORDER BY movie_id LIMIT $1 OFFSET $2;';
 
     $params = [];
+    $params[1] = $limit;
+    $params[2] = $offset;
 
     $result = pg_query_params($connect, $query, $params);
 
