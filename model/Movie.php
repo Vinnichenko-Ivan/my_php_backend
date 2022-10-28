@@ -146,7 +146,7 @@ class Movie
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTagline(): string|null
     {
@@ -154,7 +154,7 @@ class Movie
     }
 
     /**
-     * @param string $tagline
+     * @param string|null $tagline
      */
     public function setTagline(string|null $tagline): void
     {

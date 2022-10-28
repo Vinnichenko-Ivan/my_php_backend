@@ -100,7 +100,7 @@ function get_review_by_movie_id($connect, string $movie_id):array//Genre
     $reviews = [];
     foreach($arr as $temp){
         $review = new Review();
-        $review->setId($temp->id);
+        $review->setId($temp->review_id);
         $review->setCreateDateTime($temp->create_date_time);
         $review->setIsAnonymous($temp->is_anonymous);
         $review->setMovieId($temp->movie_id);
