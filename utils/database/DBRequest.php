@@ -245,13 +245,14 @@ function add_review($connect, Review $review)
 
 function edit_review($connect, Review $review)
 {
-    $query = 'UPDATE review SET rating = $1, review_text = $2, is_anonymous = $3 WHERE review_id = $4;';
+    $query = 'UPDATE review SET rating = $1, review_text = $2, is_anonymous = $3 WHERE movie_id = $4 AND user_id = $5;';
 
     $params = [];
     $params[1] = $review->getRating();
     $params[2] = $review->getReviewText();
     $params[3] = $review->isAnonymous();
-    $params[4] = $review->getId();
+    $params[4] = $review->getMovieId();
+    $params[5] = $review->getUserId();
 
 
     $result = pg_query_params($connect, $query, $params);
