@@ -23,5 +23,5 @@ function mainRouter(Request $request)
             return;
         }
     }
- setHTTPStatus(404);
+    setHTTPStatus(404);
  }

@@ -76,7 +76,7 @@ function get_genres_by_movie_id($connect, string $movie_id):array//Genre
     foreach($arr as $temp){
         $genre = new Genre();
         $genre->setName($temp->name);
-        $genre->setId($temp->id);
+        $genre->setId($temp->genre_id);
         $genres[] = $genre;
     }
     return $genres;
