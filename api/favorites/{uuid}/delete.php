@@ -1,5 +1,24 @@
 <?php
 function route($request)
 {
-    setHTTPStatus(501, 'delete method');
+    try{
+        $connect = connect();
+        $jwt = new JWT(from_token($request->getToken()));
+        if(validate_JWT($connect, $jwt))
+        {
+            if($request->getType() == 'GET')
+            {
+                delete_to_favorite($connect, $jwt->id, $request->getParams()['id']);
+            }
+        }
+        else
+        {
+            setHTTPStatus(401);
+        }
+    }
+    catch (Exception $e) {
+        echo $e->getMessage();
+        setHTTPStatus(503);//TODO нормальные ошибки.
+    }
+
 }
