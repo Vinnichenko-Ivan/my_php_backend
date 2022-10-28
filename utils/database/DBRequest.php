@@ -225,7 +225,7 @@ function movie_from_sql($connect, $temp): Movie
 
 function add_review($connect, Review $review)
 {
-    $query = 'INSERT INTO review(user_id, movie_id, rating, is_anonymous, create_date_time, review_text) VALUES ($1, $2, $3, $4, $5);';
+    $query = 'INSERT INTO review(user_id, movie_id, rating, is_anonymous, create_date_time, review_text) VALUES ($1, $2, $3, $4, $5, $6);';
 
     $params = [];
     $params[1] = $review->getUserId();
