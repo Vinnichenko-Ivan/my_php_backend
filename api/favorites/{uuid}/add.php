@@ -17,7 +17,6 @@ function route($request)
         }
     }
     catch (Exception $e) {
-        echo $e->getMessage();
-        setHTTPStatus(503);//TODO нормальные ошибки.
+        simpleExceptionHandler($e);
     }
 }

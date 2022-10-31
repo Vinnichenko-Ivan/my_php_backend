@@ -7,8 +7,7 @@ function route($request)
         echo json_encode(to_movie_details_model($movie));
     }
     catch (Exception $e) {
-        echo $e->getMessage();
-        setHTTPStatus(503);//TODO нормальные ошибки.
+        simpleExceptionHandler($e);
     }
 
 }

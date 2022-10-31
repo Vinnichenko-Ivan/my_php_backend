@@ -8,6 +8,6 @@ function route($request)
         add_user(connect(), $user);
     }
     catch (Exception $e) {
-        setHTTPStatus(503);//TODO нормальные ошибки.
+        simpleExceptionHandler($e);
     }
 }
