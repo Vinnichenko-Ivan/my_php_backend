@@ -5,6 +5,9 @@ class LoginCredentials
     public string $username;
     public string $password;
 
+    /**
+     * @throws BadDTOCastException
+     */
     public function __construct(Request $request)
     {
         $body = $request->getBody();
@@ -14,7 +17,7 @@ class LoginCredentials
         }
         else
         {
-            $this->password = null;
+            throw new BadDTOCastException();
         }
         if(property_exists($body, 'username'))
         {
@@ -22,7 +25,7 @@ class LoginCredentials
         }
         else
         {
-            $this->username = null;
+            throw new BadDTOCastException();
         }
     }
 

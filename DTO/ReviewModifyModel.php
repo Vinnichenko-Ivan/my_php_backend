@@ -3,8 +3,8 @@
 class ReviewModifyModel
 {
     public string $reviewText;
-    public int $rating;
-    public bool $isAnonymous;
+    public int|null $rating;
+    public bool|null $isAnonymous;
 
     public function __construct(Request $request = null)
     {
@@ -17,7 +17,7 @@ class ReviewModifyModel
             }
             else
             {
-                $this->reviewText = null;
+                throw new BadDTOCastException();
             }
             if(property_exists($body, 'rating'))
             {
@@ -25,7 +25,7 @@ class ReviewModifyModel
             }
             else
             {
-                throw new Exception();
+                $this->rating = null;
             }
             if(property_exists($body, 'isAnonymous'))
             {
@@ -33,7 +33,7 @@ class ReviewModifyModel
             }
             else
             {
-                throw new Exception();//TODO новые ошибки.
+                $this->isAnonymous = true;
             }
         }
     }

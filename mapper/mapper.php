@@ -12,12 +12,12 @@ function to_user(UserRegisterModel $userRegisterModel):User{
 }
 
 function change_user_info(ProfileModel $profileModel, User $user){
-    $user->setName($profileModel->name);//id изменять не буду.
+    $user->setName($profileModel->nickName);//id изменять не буду.
     $user->setBirthDate($profileModel->birthDate);
     $user->setEmail($profileModel->email);
     $user->setGender($profileModel->gender == 1 ? Gender::Male : Gender::Female);
     $user->setAvatarlink($profileModel->avatarLink);
-    $user->setUsername($profileModel->nickName);
+    $user->setUsername($profileModel->name);
     return $user;
 }
 

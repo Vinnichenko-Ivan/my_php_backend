@@ -8,42 +8,31 @@ class ProfileModel
     public string|null $avatarLink;
     public string $name;
     public string $birthDate;
-    public int $gender;
+    public int|null $gender;
 
+    /**
+     * @throws BadDTOCastException
+     */
     public function __construct(Request $request = null)
     {
         if($request != null)
         {
             $body = $request->getBody();
-            $compulsory = ['name', 'email', 'birthDate'];
+            $compulsory = ['name', 'email', 'birthDate', 'id'];
             $nullable = [];
             foreach ($compulsory as $temp)
             {
                 if(!property_exists($body, $temp))
                 {
-                    throw DTOCastException();
+                    throw new BadDTOCastException();
                 }
             }
 
             $this->name = $body->name;
             $this->email = $body->email;
+            $this->birthDate = $body->birthDate;
+            $this->id = $body->id;
 
-            if(!property_exists($body, 'birthDate'))
-            {
-                $this->birthDate = null;
-            }
-            else
-            {
-                $this->birthDate = $body->birthDate;
-            }
-            if(!property_exists($body, 'id'))
-            {
-                $this->id = null;
-            }
-            else
-            {
-                $this->id = $body->id;
-            }
             if(!property_exists($body, 'nickName'))
             {
                 $this->nickName = null;
@@ -62,7 +51,7 @@ class ProfileModel
             }
             if(!property_exists($body, 'gender'))
             {
-                $this->gender = -1;
+                $this->gender = null;
             }
             else
             {

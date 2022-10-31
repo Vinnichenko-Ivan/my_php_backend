@@ -12,7 +12,7 @@ function route(Request $request)
                 $profile = to_user_profile($user);
                 echo json_encode($profile);
             }
-            elseif ($request->getType() == 'POST')
+            elseif ($request->getType() == 'PUT')
             {
                 $profile = new ProfileModel($request);
                 $user = get_user_by_id($connect, $jwt->id);

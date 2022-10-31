@@ -8,3 +8,8 @@ function DBErrorException(): Exception
 {
     return new Exception('DBError.');
 }
+
+function simpleExceptionHandler(Exception $e): void
+{
+
+}

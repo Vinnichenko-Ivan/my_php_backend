@@ -7,7 +7,7 @@ class UserRegisterModel
     public string $password;
     public string $email;
     public string $birthDate;
-    public int $gender;
+    public int|null $gender;
 
     /**
      * @throws Exception
@@ -24,7 +24,7 @@ class UserRegisterModel
             {
                 if(!property_exists($body, $temp))
                 {
-                    throw DTOCastException();
+                    throw new BadDTOCastException();
                 }
             }
 
@@ -44,7 +44,7 @@ class UserRegisterModel
 
             if(!property_exists($body, 'gender'))
             {
-                $this->gender = -1;
+                $this->gender = null;
             }
             else
             {
