@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS movie
     time INT,
     tagline TEXT,
     director TEXT,
-    budget INT,
-    fees INT,
+    budget BIGINT,
+    fees BIGINT,
     age_limit INT,
     PRIMARY KEY (movie_id)
     );

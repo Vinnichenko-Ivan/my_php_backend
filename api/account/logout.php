@@ -6,7 +6,14 @@ function route($request)
         $jwt = new JWT(from_token($request->getToken()));
         if(validate_JWT($connect, $jwt))
         {
-            delete_jwt_by($connect, hash_fire_db($jwt->db_fire));
+            if(key_exists('global', $request->getParams()))
+            {
+                delete_all_jwt_by_username($connect, $jwt->login);
+            }
+            else
+            {
+                delete_jwt_by($connect, hash_fire_db($jwt->db_fire));
+            }
         }
         else
         {

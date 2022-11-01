@@ -436,3 +436,18 @@ function username_by_jwt($connect, string $db_fire):string|null
     }
     return result_to_array_obj($result)[0]->username;
 }
+
+function count_of_films($connect):int{
+    $query = 'SELECT COUNT(movie_id) FROM movie';
+
+    $params = [];
+
+    $result = pg_query_params($connect, $query, $params);
+
+    if(!$result)
+    {
+        log_err('DB query error on find user. ' . pg_last_error($connect));
+        throw DBErrorException();
+    }
+    return result_to_array_obj($result)[0]->count;
+}

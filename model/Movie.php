@@ -10,11 +10,11 @@ class Movie
     private array $genres; //Genre
     private array $reviews;//Review
     private int $time;
-    private string|null $tagline;
+    private string $tagline;
     private string $description;
     private string $director;
-    private int $budget;
-    private int $fees;
+    private int|null $budget;
+    private int|null $fees;
     private string $ageLimit;
 
     /**
@@ -148,7 +148,7 @@ class Movie
     /**
      * @return string|null
      */
-    public function getTagline(): string|null
+    public function getTagline(): string
     {
         return $this->tagline;
     }
@@ -156,7 +156,7 @@ class Movie
     /**
      * @param string|null $tagline
      */
-    public function setTagline(string|null $tagline): void
+    public function setTagline(string $tagline): void
     {
         $this->tagline = $tagline;
     }
@@ -194,33 +194,33 @@ class Movie
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getBudget(): int
+    public function getBudget(): int|null
     {
         return $this->budget;
     }
 
     /**
-     * @param int $budget
+     * @param int|null $budget
      */
-    public function setBudget(int $budget): void
+    public function setBudget(int|null $budget): void
     {
         $this->budget = $budget;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getFees(): int
+    public function getFees(): int|null
     {
         return $this->fees;
     }
 
     /**
-     * @param int $fees
+     * @param int|null $fees
      */
-    public function setFees(int $fees): void
+    public function setFees(int|null $fees): void
     {
         $this->fees = $fees;
     }

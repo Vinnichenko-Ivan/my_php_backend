@@ -58,4 +58,6 @@ DELETE FROM review WHERE review_id = $1;
 
 SELECT * FROM users WHERE user_id = $1;
 
-INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ()
+INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ();
+
+SELECT COUNT(movie_id) FROM movie;

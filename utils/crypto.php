@@ -44,11 +44,11 @@ function validate_JWT($connect, JWT $jwt):bool{
 }
 
 function hash_password(string $password):string{
-    return $password;//TODO hash("sha256",$user->getPassword())
+    return hash("sha256", $password);
 }
 
 function hash_fire_db(string $fire_db):string{
-    return hash("sha256", $fire_db);//TODO hash("sha256",$user->getPassword())
+    return hash("sha256", $fire_db);
 }
 
 function my_crypt(string $info):string{

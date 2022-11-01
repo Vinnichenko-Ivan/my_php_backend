@@ -11,5 +11,8 @@ function DBErrorException(): Exception
 
 function simpleExceptionHandler(Exception $e): void
 {
-
+    if($e instanceof BadDTOCastException){
+        setHTTPStatus(400, 'Bad body');
+        log_warning('Bad body');
+    }
 }
