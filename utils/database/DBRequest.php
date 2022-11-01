@@ -1,5 +1,29 @@
 <?php
 
+/**
+ * @throws DBQueryException
+ */
+function Parse_error(\PgSql\Connection $connect, \PgSql\Result|bool $result): void
+{
+    if(!$result)
+    {
+        $pg_err = pg_last_error($connect);
+        if(preg_match('/Key \(username\)=\(.*\) already exists\./', $pg_err))
+        {
+            throw new UserExistException();
+        }
+        else if(preg_match('/Key \(email\)=\(.*\) already exists\./', $pg_err))
+        {
+            throw new NonUniqueEmailException();
+        }
+        else
+        {
+            log_err('DB query error on find user. ' . $pg_err);
+            throw new DBQueryException();
+        }
+    }
+}
+
 function connect(): \PgSql\Connection
 {
     $connect = pg_connect("host=127.0.0.1 port=5432 dbname=films user=filmuser password=filmsuser");
@@ -19,7 +43,7 @@ function result_to_array_obj(\PgSql\Result $result): array
     return $arr;
 }
 
-function get_password_by_login($connect, string $username):string
+function get_password_by_login(\PgSql\Connection $connect, string $username):string|null
 {
     $query = 'SELECT password FROM users WHERE username = $1';
 
@@ -28,15 +52,19 @@ function get_password_by_login($connect, string $username):string
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     return result_to_array_obj($result)[0]->password;
 }
 
-function add_user($connect, User $user)
+function add_user(\PgSql\Connection $connect, User $user)
 {
     $query = 'INSERT INTO users(name, birth_date, username, email, password, gender, user_role) VALUES ($1, $2, $3, $4, $5, $6, $7);';
 
@@ -46,18 +74,22 @@ function add_user($connect, User $user)
     $params[3] = $user->getUsername();
     $params[4] = $user->getEmail();
     $params[5] = hash_password($user->getPassword());
-    $params[6] = $user->getGender() == 1 ? 'male' : 'female';
+    $params[6] = $user->getGender() == Gender::Male ? 'male' : 'female';
     $params[7] = 'user';
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+
+    try
     {
-        log_err('DB query error on add user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function get_genres_by_movie_id($connect, string $movie_id):array//Genre
+function get_genres_by_movie_id(\PgSql\Connection $connect, string $movie_id):array//Genre
 {
     $query = 'SELECT * FROM genre WHERE genre_id IN (SELECT genre_id FROM movie_genres WHERE movie_id = $1);';
 
@@ -66,9 +98,13 @@ function get_genres_by_movie_id($connect, string $movie_id):array//Genre
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get genres. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 
     $arr = result_to_array_obj($result);
@@ -82,7 +118,7 @@ function get_genres_by_movie_id($connect, string $movie_id):array//Genre
     return $genres;
 }
 
-function get_review_by_movie_id($connect, string $movie_id):array//Genre
+function get_review_by_movie_id(\PgSql\Connection $connect, string $movie_id):array//Genre
 {
     $query = 'SELECT * FROM review WHERE movie_id = $1;';
 
@@ -91,9 +127,13 @@ function get_review_by_movie_id($connect, string $movie_id):array//Genre
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get review. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 
     $arr = result_to_array_obj($result);
@@ -112,7 +152,7 @@ function get_review_by_movie_id($connect, string $movie_id):array//Genre
     return $reviews;
 }
 
-function get_favorites_by_user_id($connect, string $user_id):array//Movie
+function get_favorites_by_user_id(\PgSql\Connection $connect, string $user_id):array//Movie
 {
     $query = 'SELECT * FROM movie WHERE movie_id IN (SELECT movie_id FROM favorites WHERE user_id = $1);';
 
@@ -121,9 +161,13 @@ function get_favorites_by_user_id($connect, string $user_id):array//Movie
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get favorites. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 
     $arr = result_to_array_obj($result);
@@ -134,7 +178,7 @@ function get_favorites_by_user_id($connect, string $user_id):array//Movie
     return $movies;
 }
 
-function add_to_favorite($connect, string $user_id, string $movie_id):void
+function add_to_favorite(\PgSql\Connection $connect, string $user_id, string $movie_id):void
 {
     $query = 'INSERT INTO favorites(user_id, movie_id) VALUES ($1, $2);';
 
@@ -143,13 +187,17 @@ function add_to_favorite($connect, string $user_id, string $movie_id):void
     $params[2] = $movie_id;
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on add favorites. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function delete_to_favorite($connect, string $user_id, string $movie_id):void
+function delete_to_favorite(\PgSql\Connection $connect, string $user_id, string $movie_id):void
 {
     $query = 'DELETE FROM favorites WHERE user_id = $1 AND movie_id = $2;';
 
@@ -158,13 +206,17 @@ function delete_to_favorite($connect, string $user_id, string $movie_id):void
     $params[2] = $movie_id;
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on delete favorites. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function get_movies($connect, int $offset = 0,  int $limit = 5)
+function get_movies(\PgSql\Connection $connect, int $offset = 0,  int $limit = 5)
 {
     $query = 'SELECT * FROM movie ORDER BY movie_id LIMIT $1 OFFSET $2;';
 
@@ -174,9 +226,13 @@ function get_movies($connect, int $offset = 0,  int $limit = 5)
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get movies. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 
     $arr = result_to_array_obj($result);
@@ -187,7 +243,7 @@ function get_movies($connect, int $offset = 0,  int $limit = 5)
     return $movies;
 }
 
-function get_movie_by_id($connect, string $movie_id):Movie
+function get_movie_by_id(\PgSql\Connection $connect, string $movie_id):Movie
 {
     $query = 'SELECT * FROM movie WHERE movie_id = $1;';
 
@@ -196,16 +252,20 @@ function get_movie_by_id($connect, string $movie_id):Movie
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get movie. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 
     $arr = result_to_array_obj($result);
     return movie_from_sql($connect, $arr[0]);//TODO ничего не найдено
 }
 
-function movie_from_sql($connect, $temp): Movie
+function movie_from_sql(\PgSql\Connection $connect, $temp): Movie
 {
     $movie = new Movie();
     $movie->setId($temp->movie_id);
@@ -225,7 +285,7 @@ function movie_from_sql($connect, $temp): Movie
     return $movie;
 }
 
-function add_review($connect, Review $review)
+function add_review(\PgSql\Connection $connect, Review $review)
 {
     $query = 'INSERT INTO review(user_id, movie_id, rating, is_anonymous, create_date_time, review_text) VALUES ($1, $2, $3, $4, $5, $6);';
 
@@ -239,13 +299,17 @@ function add_review($connect, Review $review)
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on add review. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function edit_review($connect, Review $review)
+function edit_review(\PgSql\Connection $connect, Review $review)
 {
     $query = 'UPDATE review SET rating = $1, review_text = $2, is_anonymous = $3 WHERE movie_id = $4 AND user_id = $5;';
 
@@ -259,13 +323,17 @@ function edit_review($connect, Review $review)
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on edit review. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function delete_review($connect, string $review_id)
+function delete_review(\PgSql\Connection $connect, string $review_id)
 {
     $query = 'DELETE FROM review WHERE review_id = $1;';
 
@@ -274,13 +342,17 @@ function delete_review($connect, string $review_id)
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on delete    review. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function get_user_by_id($connect, string $user_id){
+function get_user_by_id(\PgSql\Connection $connect, string $user_id){
 
     $query = 'SELECT * FROM users WHERE user_id = $1;';
 
@@ -289,15 +361,20 @@ function get_user_by_id($connect, string $user_id){
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on get user. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     $arr = result_to_array_obj($result);
     return user_from_sql($connect, $arr[0]);//TODO ничего не найдено
 }
 
-function user_from_sql($connect, $temp):User{
+function user_from_sql(\PgSql\Connection $connect, $temp):User{
     $user = new User();
     $user->setId($temp->user_id);
     $user->setName($temp->name);
@@ -310,7 +387,7 @@ function user_from_sql($connect, $temp):User{
     return $user;
 }
 
-function edit_user($connect, User $user){
+function edit_user(\PgSql\Connection $connect, User $user){
     $query = 'UPDATE users SET
         name = $1,
         birth_date = $2,
@@ -330,13 +407,17 @@ function edit_user($connect, User $user){
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on edit profile. ' . pg_last_error($connect));
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function user_id_by_username($connect, string $username):string
+function user_id_by_username(\PgSql\Connection $connect, string $username):string
 {
     $query = 'SELECT user_id FROM users WHERE username = $1;';
 
@@ -345,15 +426,19 @@ function user_id_by_username($connect, string $username):string
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     return result_to_array_obj($result)[0]->user_id;
 }
 
-function add_jwt_by_username($connect, string $username, string $time, string $db_fire):void
+function add_jwt_by_username(\PgSql\Connection $connect, string $username, string $time, string $db_fire):void
 {
     $query = 'INSERT INTO jwt_tokens(token, create_date, user_id) VALUES ($1, $2, $3)';
 
@@ -364,14 +449,17 @@ function add_jwt_by_username($connect, string $username, string $time, string $d
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function delete_all_jwt_by_username($connect, string $username):void
+function delete_all_jwt_by_username(\PgSql\Connection $connect, string $username):void
 {
     $query = 'DELETE FROM jwt_tokens WHERE user_id = $1';
 
@@ -380,14 +468,17 @@ function delete_all_jwt_by_username($connect, string $username):void
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function delete_jwt_by($connect, string $db_fire):void
+function delete_jwt_by(\PgSql\Connection $connect, string $db_fire):void
 {
     $query = 'DELETE FROM jwt_tokens WHERE token = $1';
 
@@ -396,14 +487,17 @@ function delete_jwt_by($connect, string $db_fire):void
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
     }
 }
 
-function user_id_by_jwt($connect, string $db_fire):string|null//TODO null
+function user_id_by_jwt(\PgSql\Connection $connect, string $db_fire):string|null
 {
     $query = 'SELECT user_id FROM jwt_tokens WHERE token = $1';
 
@@ -412,15 +506,19 @@ function user_id_by_jwt($connect, string $db_fire):string|null//TODO null
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     return result_to_array_obj($result)[0]->user_id;
 }
 
-function username_by_jwt($connect, string $db_fire):string|null
+function username_by_jwt(\PgSql\Connection $connect, string $db_fire):string|null
 {
     $query = 'SELECT username FROM users WHERE user_id = $1';
 
@@ -429,25 +527,74 @@ function username_by_jwt($connect, string $db_fire):string|null
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     return result_to_array_obj($result)[0]->username;
 }
 
-function count_of_films($connect):int{
+function count_of_films(\PgSql\Connection $connect):int{
     $query = 'SELECT COUNT(movie_id) FROM movie';
 
     $params = [];
 
     $result = pg_query_params($connect, $query, $params);
 
-    if(!$result)
+    try
     {
-        log_err('DB query error on find user. ' . pg_last_error($connect));
-        throw DBErrorException();
+        Parse_error($connect, $result);
     }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
     return result_to_array_obj($result)[0]->count;
+}
+
+function get_review_user_id(\PgSql\Connection $connect, string $review_id):string
+{
+    $query = 'SELECT user_id FROM review WHERE review_id = $1;';
+
+    $params = [];
+    $params[1] = $review_id;
+
+    $result = pg_query_params($connect, $query, $params);
+    try
+    {
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
+    return result_to_array_obj($result)[0]->userId;
+}
+
+function get_user_role(\PgSql\Connection $connect, string $user_id)
+{
+    $query = 'SELECT user_role FROM users WHERE user_id = $1;';
+
+    $params = [];
+    $params[1] = $user_id;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    try
+    {
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
+    return result_to_array_obj($result)[0]->user_role;
 }

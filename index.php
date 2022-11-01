@@ -8,7 +8,10 @@ include_once 'utils/crypto.php';
 include_once 'utils/database/DBRequest.php';
 include_once 'mapper/mapper.php';
 
-include_once 'utils/exception/BadDTOCastException.php';
+foreach (glob("utils/exception/*.php") as $filename)
+{
+    include_once $filename;
+}
 
 foreach (glob("DTO/*.php") as $filename)
 {

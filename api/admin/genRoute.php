@@ -6,14 +6,7 @@ function route($request)
         $jwt = new JWT(from_token($request->getToken()));
         if(validate_JWT($connect, $jwt))
         {
-            if(key_exists('id', $request->getParams()))
-            {
-                add_to_favorite($connect, $jwt->id, $request->getParams()['id']);
-            }
-            else
-            {
-                throw new ParamMissingException();
-            }
+
         }
         else
         {

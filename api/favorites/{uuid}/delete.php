@@ -2,18 +2,22 @@
 function route($request)
 {
     try{
-        $connect = connect();
-        $jwt = new JWT(from_token($request->getToken()));
-        if(validate_JWT($connect, $jwt))
+        if(key_exists('id', $request->getParams()))
         {
-            if($request->getType() == 'GET')
+            $connect = connect();
+            $jwt = new JWT(from_token($request->getToken()));
+            if(validate_JWT($connect, $jwt))
             {
                 delete_to_favorite($connect, $jwt->id, $request->getParams()['id']);
+            }
+            else
+            {
+                setHTTPStatus(401);
             }
         }
         else
         {
-            setHTTPStatus(401);
+            throw new ParamMissingException();
         }
     }
     catch (Exception $e) {
