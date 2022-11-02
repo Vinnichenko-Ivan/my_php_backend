@@ -15,8 +15,17 @@ function to_token(JWT $jwt):string{
     return base64_encode(json_encode($jwt));
 }
 
-function from_token(string $token){
-    return json_decode(base64_decode($token));
+function from_token(string|null $token){
+    if($token == null)
+    {
+        throw new UnauthorizedException();
+    }
+    $obj = json_decode(base64_decode($token));
+    if($obj == null)
+    {
+        throw new UnauthorizedException();
+    }
+    return $obj;
 }
 
 function my_key(): string{
@@ -32,6 +41,7 @@ function type_crypto(): string{
 }
 
 function validate_JWT($connect, JWT $jwt):bool{
+
     if(my_encrypt($jwt->signature) != my_signature())
     {
         return false;

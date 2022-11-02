@@ -450,9 +450,11 @@ INSERT INTO movie(movie_id, name, poster, year, country, time, tagline, descript
                                                                                                                             );
 
 INSERT INTO movie_genres(movie_id, genre_id) VALUES
-                                                 ('7afb952e-e06b-4224-98e4-f107926aad05', '7afb952e-e06b-4224-98e4-f107926aad0b'),
-                                                 ('7afb952e-e06b-4224-98e4-f107926aad05', '7afb952e-e06b-4224-98e4-f107926aad0a'),
-                                                 ('7afb952e-e06b-4224-98e4-f107926aad06', '7afb952e-e06b-4224-98e4-f107926aad0b'),
-                                                 ('7afb952e-e06b-4224-98e4-f107926aad06', '7afb952e-e06b-4224-98e4-f107926aad0a'),
-                                                 ('7afb952e-e06b-4224-98e4-f107926aad07', '7afb952e-e06b-4224-98e4-f107926aad12'),
-                                                 ('82c34463-daf4-4702-a2b8-08d9b9f3d2a2', '7afb952e-e06b-4224-98e4-f107926aad12');
+
+('11253dbf-88b6-4149-a2c3-08d9b9f3d2a1', '7afb952e-e06b-4224-98e4-f107926aad07'),
+
+('82c34463-daf4-4702-a2b8-08d9b9f3d2a2','7afb952e-e06b-4224-98e4-f107926aad12'),
+
+('82c34463-daf4-4702-a2b8-08d9b9f3d2a2','7afb952e-e06b-4224-98e4-f107926aad08'),
+
+('7eae1e59-d6c5-4316-a2af-08d9b9f3d2a2','7afb952e-e06b-4224-98e4-f107926aad0e');

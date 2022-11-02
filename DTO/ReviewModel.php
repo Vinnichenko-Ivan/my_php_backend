@@ -7,5 +7,5 @@ class ReviewModel
     public string $reviewText;
     public bool $isAnonymous;
     public string $createDateTime;
-    public object|null $author;
+    public string|null $author;
 }

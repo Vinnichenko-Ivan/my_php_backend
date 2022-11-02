@@ -16,6 +16,10 @@ function Parse_error(\PgSql\Connection $connect, \PgSql\Result|bool $result): vo
         {
             throw new NonUniqueEmailException();
         }
+        else if(preg_match('/Key \(user_id, movie_id\)/', $pg_err))
+        {
+            throw new ConflictException();
+        }
         else
         {
             log_err('DB query error on find user. ' . $pg_err);
@@ -142,7 +146,7 @@ function get_review_by_movie_id(\PgSql\Connection $connect, string $movie_id):ar
         $review = new Review();
         $review->setId($temp->review_id);
         $review->setCreateDateTime($temp->create_date_time);
-        $review->setIsAnonymous($temp->is_anonymous);
+        $review->setIsAnonymous(!($temp->is_anonymous == 'f'));
         $review->setMovieId($temp->movie_id);
         $review->setRating($temp->rating);
         $review->setReviewText($temp->review_text);
@@ -218,7 +222,7 @@ function delete_to_favorite(\PgSql\Connection $connect, string $user_id, string 
 
 function get_movies(\PgSql\Connection $connect, int $offset = 0,  int $limit = 5)
 {
-    $query = 'SELECT * FROM movie ORDER BY movie_id LIMIT $1 OFFSET $2;';
+    $query = 'SELECT * FROM movie ORDER BY name DESC LIMIT $1 OFFSET $2;';
 
     $params = [];
     $params[1] = $limit;
@@ -316,10 +320,9 @@ function edit_review(\PgSql\Connection $connect, Review $review)
     $params = [];
     $params[1] = $review->getRating();
     $params[2] = $review->getReviewText();
-    $params[3] = $review->isAnonymous();
+    $params[3] = $review->isAnonymous()?'true':'false';
     $params[4] = $review->getMovieId();
     $params[5] = $review->getUserId();
-
 
     $result = pg_query_params($connect, $query, $params);
 
@@ -558,9 +561,9 @@ function count_of_films(\PgSql\Connection $connect):int{
     return result_to_array_obj($result)[0]->count;
 }
 
-function get_review_user_id(\PgSql\Connection $connect, string $review_id):string
+function get_review_user_id(\PgSql\Connection $connect, string $review_id):string|null
 {
-    $query = 'SELECT user_id FROM review WHERE review_id = $1;';
+    $query = 'SELECT user_id AS user_id FROM review WHERE review_id = $1;';
 
     $params = [];
     $params[1] = $review_id;
@@ -575,7 +578,7 @@ function get_review_user_id(\PgSql\Connection $connect, string $review_id):strin
         throw $e;
     }
 
-    return result_to_array_obj($result)[0]->userId;
+    return result_to_array_obj($result)[0]->user_id;
 }
 
 function get_user_role(\PgSql\Connection $connect, string $user_id)

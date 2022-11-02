@@ -65,7 +65,7 @@ function to_review_model(Review $review):ReviewModel{
     }
     else
     {
-        $reviewModel->author = $review->getId();
+        $reviewModel->author = $review->getUserId();
     }
     return $reviewModel;//TODO доделать авторство
 }

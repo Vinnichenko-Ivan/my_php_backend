@@ -11,6 +11,11 @@ class LoginCredentials
     public function __construct(Request $request)
     {
         $body = $request->getBody();
+        if($body == null)
+        {
+            throw new BadDTOCastException();
+        }
+
         if(property_exists($body, 'password'))
         {
             $this->password = $body->password;

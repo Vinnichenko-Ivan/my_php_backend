@@ -11,6 +11,10 @@ class ReviewModifyModel
         if($request != null)
         {
             $body = $request->getBody();
+            if($body == null)
+            {
+                throw new BadDTOCastException();
+            }
             if(property_exists($body, 'reviewText'))
             {
                 $this->reviewText = $body->reviewText;
@@ -22,6 +26,10 @@ class ReviewModifyModel
             if(property_exists($body, 'rating'))
             {
                 $this->rating = $body->rating;
+                if($this->rating < 1 or $this->rating > 10)
+                {
+                    throw new BadDTOCastException();
+                }
             }
             else
             {

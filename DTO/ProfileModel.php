@@ -18,6 +18,10 @@ class ProfileModel
         if($request != null)
         {
             $body = $request->getBody();
+            if($body == null)
+            {
+                throw new BadDTOCastException();
+            }
             $compulsory = ['name', 'email', 'birthDate', 'id'];
             $nullable = [];
             foreach ($compulsory as $temp)

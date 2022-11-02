@@ -8,16 +8,22 @@ function route($request)
             $jwt = new JWT(from_token($request->getToken()));
             if(validate_JWT($connect, $jwt))
             {
-                if(get_review_user_id($connect, $request->getParams()['id'] == $jwt->id))
+                $user_id = get_review_user_id($connect, $request->getParams()['id']);
+                if($user_id == null)
+                {
+                    throw new NotFoundException();
+                }
+
+                if($user_id == $jwt->id)
                 {
                     delete_review($connect, $request->getParams()['id']);
                 }
-                else if(get_user_by_id($connect, $jwt->id) == 'moderator')
+                else if(get_user_role($connect, $jwt->id) == 'moderator')
                 {
                     delete_review($connect, $request->getParams()['id']);
                     log_info('moderator' . $jwt->id . 'delete review' . $request->getParams()['id']);
                 }
-                else if(get_user_by_id($connect, $jwt->id) == 'admin')
+                else if(get_user_role($connect, $jwt->id) == 'admin')
                 {
                     delete_review($connect, $request->getParams()['id']);
                 }

@@ -18,6 +18,10 @@ class UserRegisterModel
         if(!is_null($request))
         {
             $body = $request->getBody();
+            if($body == null)
+            {
+                throw new BadDTOCastException();
+            }
             $compulsory = ['userName', 'name', 'password', 'email'];
             $nullable = [];
             foreach ($compulsory as $temp)

@@ -52,6 +52,10 @@ function simpleExceptionHandler(Exception $e): void
     {
         setHTTPStatus(403);
     }
+    else if($e instanceof ConflictException)
+    {
+        setHTTPStatus(409);
+    }
     else
     {
         setHTTPStatus(503);

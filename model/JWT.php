@@ -2,7 +2,7 @@
 
 class JWT
 {
-    public string $login;
+    public string$login;
     public string $id;
     public string $date_created;
     public string $db_fire;

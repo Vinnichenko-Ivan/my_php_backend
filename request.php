@@ -7,7 +7,7 @@ class Request
     private array $segmentPath;
     private array $params;
     private array $headers;
-    private object $body;
+    private object|null $body;
 
     /**
      * @return array
@@ -28,7 +28,7 @@ class Request
     /**
      * @return object
      */
-    public function getBody(): object
+    public function getBody(): object|null
     {
         return $this->body;
     }
@@ -36,7 +36,7 @@ class Request
     /**
      * @param object $body
      */
-    public function setBody(object $body): void
+    public function setBody(object|null $body): void
     {
         $this->body = $body;
     }
@@ -106,11 +106,11 @@ class Request
         $this->params = $params;
     }
 
-    public function getToken():string|null{
+    public function getToken():string{
         if(key_exists('Authorization', $this->headers)){
             return explode(' ',$this->headers['Authorization'])[1];
         }
-        return null;
+        throw new UnauthorizedException();
     }
 }
 
@@ -124,15 +124,16 @@ function getRequest(): Request
     foreach ($_GET as $key => $value) {
         if($key != 'query')
         {
-            $params[$key] = &$value;
+            $params[$key] = $value;
         }
     }
+    $request->setBody(null);
     $request->setHeaders(getallheaders());
     $request->setParams($params);
     $request->setPath($path);
     $request->setSegmentPath($segmentPath);
     $request->setType($type);
-    if($type != "GET") {
+    if(file_get_contents('php://input')) {
         $request->setBody(json_decode(file_get_contents('php://input')));
     }
 
