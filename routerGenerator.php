@@ -1,6 +1,7 @@
 <?php
 
-function generate($prefix = 'api', $generateFile = 'router.php'){
+function generate($prefix = 'api', $generateFile = 'router.php'): void
+{
     $allPHPFiles = [];
     $pathQueue = [];
     $pathQueue[1] = $prefix;
@@ -45,22 +46,12 @@ function generate($prefix = 'api', $generateFile = 'router.php'){
 
     foreach ($allRegAndPHP as $key => $value)
     {
-        $text = $text . '$regexAndPaths[\'' . $key . '\'] = \'' . $value . '\';' . ' \n ';
+        $text = $text . '$regexAndPaths[\'' . $key . '\'] = \'' . $value . '\';' . "\n";
     }
 
-    $text = $text . 'foreach ($regexAndPaths as $key => $value)' . " \n ";
-    $text = $text . '{' . " \n ";
-    $text = $text . 'if(preg_match($key, $request->path) == 1)' . " \n ";
-    $text = $text . '{' . " \n ";
-    $text = $text . 'include_once $value;' . " \n ";
-    $text = $text . 'route($request);' . " \n ";
-    $text = $text . 'return;' . " \n ";
-    $text = $text . '}' . " \n ";
-    $text = $text . '}' . " \n ";
-    $text = $text . 'setHTTPStatus(404);' . " \n ";
-    $text = $text . '}' . " \n ";
+    $text = $text . 'foreach ($regexAndPaths as $key => $value) {if(preg_match($key, $request->getPath()) == 1) {include_once $value;route($request);return;}}setHTTPStatus(404);}';
 
-    file_put_contents('router.php', '<?php');
+    file_put_contents('router.php', $text);
     echo $text;
 }
 

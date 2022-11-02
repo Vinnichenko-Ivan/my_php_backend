@@ -1,6 +1,4 @@
 <?php
-include_once 'routerGenerator.php';
-
 function route($request)
 {
     try{
@@ -10,7 +8,7 @@ function route($request)
         {
             if(get_user_role($connect, $jwt->id) == 'admin')
             {
-                generate();
+                drop_log();
             }
         }
         else

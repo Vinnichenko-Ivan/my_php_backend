@@ -19,3 +19,8 @@ function log_err($message): void
 {
     log_in_file('[ERROR]', $message);
 }
+
+function drop_log()
+{
+    file_put_contents(__DIR__ . '/../log.txt', '');
+}

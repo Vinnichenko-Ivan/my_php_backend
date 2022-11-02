@@ -1,5 +1,6 @@
 <?php
-include_once 'router.php';
+include_once 'routerGenerator.php';
+
 include_once 'request.php';
 include_once 'utils/headers.php';
 include_once 'utils/exception.php';
@@ -22,7 +23,8 @@ foreach (glob("model/*.php") as $filename)
 {
     include_once $filename;
 }
-
+//generate();
+include_once 'router.php';
 header('Content-Type: application/json');
 mainRouter(getRequest());
 
