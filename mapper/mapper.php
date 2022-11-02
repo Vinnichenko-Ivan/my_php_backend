@@ -67,7 +67,7 @@ function to_review_model(Review $review):ReviewModel{
     {
         $reviewModel->author = $review->getUserId();
     }
-    return $reviewModel;//TODO доделать авторство
+    return $reviewModel;
 }
 
 function to_review_short_model(Review $review):ReviewShortModel{
@@ -134,7 +134,7 @@ function to_movies_list_model(array $movies):MoviesListModel{
 function to_movies_paged_list_model(array $movies):MoviesPagedListModel{
     $moviesPagedListModel = new MoviesPagedListModel();
     $moviesPagedListModel->movies = to_array_movies_element_model($movies);
-    $moviesPagedListModel->pageInfo = new PageInfoModel();//TODO работа с пагинацией
+    $moviesPagedListModel->pageInfo = new PageInfoModel();
     return $moviesPagedListModel;
 }
 
