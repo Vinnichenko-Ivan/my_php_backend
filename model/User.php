@@ -8,7 +8,7 @@ class User
     private string $username;
     private string $email;
     private string $password;
-    private string|null $avatarLink;//TODO добавить в базу данных
+    private string|null $avatarLink;
     private int $role;
     private Gender $gender;
 

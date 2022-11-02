@@ -247,7 +247,7 @@ function get_movies(\PgSql\Connection $connect, int $offset = 0,  int $limit = 5
     return $movies;
 }
 
-function get_movie_by_id(\PgSql\Connection $connect, string $movie_id):Movie
+function get_movie_by_id(\PgSql\Connection $connect, string $movie_id):Movie|null
 {
     $query = 'SELECT * FROM movie WHERE movie_id = $1;';
 
@@ -266,11 +266,15 @@ function get_movie_by_id(\PgSql\Connection $connect, string $movie_id):Movie
     }
 
     $arr = result_to_array_obj($result);
-    return movie_from_sql($connect, $arr[0]);//TODO ничего не найдено
+    return movie_from_sql($connect, $arr[0]);
 }
 
 function movie_from_sql(\PgSql\Connection $connect, $temp): Movie
 {
+    if($temp == null)
+    {
+        throw new NotFoundException();
+    }
     $movie = new Movie();
     $movie->setId($temp->movie_id);
     $movie->setName($temp->name);
@@ -355,7 +359,8 @@ function delete_review(\PgSql\Connection $connect, string $review_id)
     }
 }
 
-function get_user_by_id(\PgSql\Connection $connect, string $user_id){
+function get_user_by_id(\PgSql\Connection $connect, string $user_id): User|null
+{
 
     $query = 'SELECT * FROM users WHERE user_id = $1;';
 
@@ -374,7 +379,7 @@ function get_user_by_id(\PgSql\Connection $connect, string $user_id){
     }
 
     $arr = result_to_array_obj($result);
-    return user_from_sql($connect, $arr[0]);//TODO ничего не найдено
+    return user_from_sql($connect, $arr[0]);
 }
 
 function user_from_sql(\PgSql\Connection $connect, $temp):User{
@@ -396,8 +401,9 @@ function edit_user(\PgSql\Connection $connect, User $user){
         birth_date = $2,
         username = $3,
         email  = $4,
-        gender = $5
-        WHERE user_id = $6;';
+        gender = $5,
+        avatar_link = $6
+        WHERE user_id = $7;';
     //--password = $5,
     $params = [];
 
@@ -406,7 +412,8 @@ function edit_user(\PgSql\Connection $connect, User $user){
     $params[3] = $user->getUsername();
     $params[4] = $user->getEmail();
     $params[5] = $user->getGender() == Gender::Male?'male':'female';
-    $params[6] = $user->getId();
+    $params[6] = $user->getAvatarLink() == null?'':$user->getAvatarLink();
+    $params[7] = $user->getId();
 
     $result = pg_query_params($connect, $query, $params);
 
