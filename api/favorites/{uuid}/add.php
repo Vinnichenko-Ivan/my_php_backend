@@ -2,22 +2,24 @@
 function route($request)
 {
     try{
-        $connect = connect();
-        $jwt = new JWT(from_token($request->getToken()));
-        if(validate_JWT($connect, $jwt))
+        if(is_uuid_param($request->getSegmentPath()[2]))
         {
-            if(key_exists('id', $request->getParams()))
+            $params = [];
+            $params['id'] = $request->getSegmentPath()[2];
+            $connect = connect();
+            $jwt = new JWT(from_token($request->getToken()));
+            if(validate_JWT($connect, $jwt))
             {
-                add_to_favorite($connect, $jwt->id, $request->getParams()['id']);
+                add_to_favorite($connect, $jwt->id, $params['id']);
             }
             else
             {
-                throw new ParamMissingException();
+                throw new UnauthorizedException();
             }
         }
         else
         {
-            setHTTPStatus(401);
+            throw new ParamMissingException();
         }
     }
     catch (Exception $e) {

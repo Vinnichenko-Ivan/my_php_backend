@@ -2,13 +2,16 @@
 function route($request)
 {
     try{
-        if(key_exists('id', $request->getParams()))
+        if(is_uuid_param($request->getSegmentPath()[4]))
         {
+            $params = [];
+            $params['id'] = $request->getSegmentPath()[4];
+
             $connect = connect();
             $jwt = new JWT(from_token($request->getToken()));
             if(validate_JWT($connect, $jwt))
             {
-                $user_id = get_review_user_id($connect, $request->getParams()['id']);
+                $user_id = get_review_user_id($connect, $params['id']);
                 if($user_id == null)
                 {
                     throw new NotFoundException();
@@ -16,16 +19,16 @@ function route($request)
 
                 if($user_id == $jwt->id)
                 {
-                    delete_review($connect, $request->getParams()['id']);
+                    delete_review($connect, $params['id']);
                 }
                 else if(get_user_role($connect, $jwt->id) == 'moderator')
                 {
-                    delete_review($connect, $request->getParams()['id']);
-                    log_info('moderator' . $jwt->id . 'delete review' . $request->getParams()['id']);
+                    delete_review($connect, $params['id']);
+                    log_info('moderator' . $jwt->id . 'delete review' . $params['id']);
                 }
                 else if(get_user_role($connect, $jwt->id) == 'admin')
                 {
-                    delete_review($connect, $request->getParams()['id']);
+                    delete_review($connect, $params['id']);
                 }
                 else
                 {
@@ -34,7 +37,7 @@ function route($request)
             }
             else
             {
-                setHTTPStatus(401);
+                throw new UnauthorizedException();
             }
         }
         else

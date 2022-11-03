@@ -608,3 +608,28 @@ function get_user_role(\PgSql\Connection $connect, string $user_id)
 
     return result_to_array_obj($result)[0]->user_role;
 }
+
+function review_exist_or_throw(\PgSql\Connection $connect, string $user_id, string $movie_id)
+{
+    $query = 'SELECT COUNT(*) AS co FROM review WHERE user_id = $1 AND movie_id = $2;';
+
+    $params = [];
+    $params[1] = $user_id;
+    $params[2] = $movie_id;
+
+    $result = pg_query_params($connect, $query, $params);
+
+    try
+    {
+        Parse_error($connect, $result);
+    }
+    catch (Exception $e)
+    {
+        throw $e;
+    }
+
+    if(!result_to_array_obj($result)[0]->co == 1)
+    {
+        throw new NotFoundException();
+    }
+}

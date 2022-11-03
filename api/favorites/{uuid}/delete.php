@@ -2,17 +2,19 @@
 function route($request)
 {
     try{
-        if(key_exists('id', $request->getParams()))
+        if(is_uuid_param($request->getSegmentPath()[2]))
         {
+            $params = [];
+            $params['id'] = $request->getSegmentPath()[2];
             $connect = connect();
             $jwt = new JWT(from_token($request->getToken()));
             if(validate_JWT($connect, $jwt))
             {
-                delete_to_favorite($connect, $jwt->id, $request->getParams()['id']);
+                delete_to_favorite($connect, $jwt->id, $params['id']);
             }
             else
             {
-                setHTTPStatus(401);
+                throw new UnauthorizedException();
             }
         }
         else

@@ -139,3 +139,27 @@ function getRequest(): Request
 
     return $request;
 }
+
+function is_uuid_param(string $uuid) : bool
+{
+    if(preg_match('/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/', $uuid) == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+function is_int_param(string $int) : bool
+{
+    if(preg_match('/\d+/', $int) == 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}

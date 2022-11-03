@@ -11,7 +11,7 @@ function route($request)
         }
         else
         {
-            setHTTPStatus(401);
+            throw new UnauthorizedException();
         }
     }
     catch (Exception $e) {
